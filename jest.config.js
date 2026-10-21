@@ -8,7 +8,8 @@ module.exports = {
         target: 'es2020',
         module: 'commonjs',
         esModuleInterop: true,
-        strict: true
+        strict: true,
+        types: ['jest', 'node']
       }
     }]
   },
