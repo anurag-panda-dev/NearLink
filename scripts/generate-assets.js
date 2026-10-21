@@ -83,14 +83,17 @@ const PALETTES = {
     violet: [0x8b, 0x5cf6],
     emerald: [0x10, 0xb9, 0x81],
     core: [0xff, 0xff, 0xff],
+    waveAlpha: [1.0, 0.8, 0.6],
   },
   light: {
     bg: [0xff, 0xff, 0xff],
     vignette: [0xf1, 0xf5, 0xf9],
-    cyan: [0x08, 0x91, 0xb2],
-    violet: [0x7c, 0x3a, 0xed],
-    emerald: [0x05, 0x96, 0x69],
-    core: [0xe0, 0xf7, 0xff],
+    // Deeper hues so the mark clears WCAG AA (>=4.5:1) on a white page.
+    cyan: [0x15, 0x5e, 0x75], // cyan-800
+    violet: [0x5b, 0x21, 0xb6], // violet-800
+    emerald: [0x04, 0x78, 0x57], // emerald-700
+    core: [0x22, 0xd3, 0xee], // cyan-400 beacon inside the hub
+    waveAlpha: [1.0, 0.85, 0.7],
   },
 };
 
@@ -219,10 +222,11 @@ function drawMark(buf, w, h, cx, cy, S, palette, opts = {}) {
   }
 
   // BLE broadcast waves: three concentric arcs, fading outwards
+  const [a0, a1, a2] = P.waveAlpha;
   const waves = [
-    { r: S * 0.19, t: S * 0.030, c: P.cyan, a: 1.0 },
-    { r: S * 0.275, t: S * 0.026, c: mix(P.cyan, P.violet, 0.45), a: 0.8 },
-    { r: S * 0.355, t: S * 0.022, c: P.violet, a: 0.6 },
+    { r: S * 0.19, t: S * 0.030, c: P.cyan, a: a0 },
+    { r: S * 0.275, t: S * 0.026, c: mix(P.cyan, P.violet, 0.45), a: a1 },
+    { r: S * 0.355, t: S * 0.022, c: P.violet, a: a2 },
   ];
   for (const wv of waves) {
     ring(buf, w, h, cx, cy, wv.r, wv.t, wv.c, wv.a, -0.35, Math.PI * 2 - 0.35);

@@ -3,7 +3,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="logo-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="logo-light.png">
-  <img src="logo-light.png" alt="NearLink" width="256" height="256">
+  <img src="logo.png" alt="NearLink" width="256" height="256">
 </picture>
 
 # NearLink
