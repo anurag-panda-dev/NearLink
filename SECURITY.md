@@ -13,7 +13,7 @@
 We take the security and cryptographic integrity of NearLink seriously. If you believe you have discovered a vulnerability related to encryption, key derivation, BLE packet framing, or packet spoofing:
 
 1. **Do not create a public GitHub issue.**
-2. Send an email to `security@nearlink.local` (or file a confidential security advisory on GitHub).
+2. Send an email to `anurag-panda-dev@gmail.com` (or file a confidential security advisory on GitHub).
 3. Include:
    - Detailed description of the potential vulnerability
    - Steps to reproduce or proof-of-concept payload
