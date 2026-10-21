@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { OfflineGroup, GroupMember } from '../types/group';
 import { ChatMessage } from '../types/message';
 import { GroupManager } from '../services/group/GroupManager';
+import { QrGroupInvitePayload } from '../services/crypto/qr';
 import { LocalStorage } from '../services/storage/LocalStorage';
 
 interface GroupState {
@@ -11,6 +12,7 @@ interface GroupState {
 
   loadGroups: () => Promise<void>;
   createGroup: (name: string, description?: string) => Promise<OfflineGroup>;
+  joinGroupFromInvite: (invite: QrGroupInvitePayload) => Promise<OfflineGroup>;
   setActiveGroup: (groupId: string) => Promise<void>;
   sendGroupMessage: (groupId: string, text: string) => Promise<ChatMessage | null>;
   addMemberToGroup: (groupId: string, member: GroupMember) => Promise<void>;
@@ -32,6 +34,12 @@ export const useGroupStore = create<GroupState>((set, get) => {
 
     createGroup: async (name: string, description?: string) => {
       const group = await manager.createGroup(name, description);
+      set({ groups: manager.getGroups() });
+      return group;
+    },
+
+    joinGroupFromInvite: async (invite: QrGroupInvitePayload) => {
+      const group = await manager.joinFromInvite(invite);
       set({ groups: manager.getGroups() });
       return group;
     },

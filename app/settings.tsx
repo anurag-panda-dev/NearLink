@@ -10,9 +10,10 @@ import {
   Modal,
   Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeScreen } from '../src/components/SafeScreen';
 import { useRouter } from 'expo-router';
 import { Colors } from '../src/theme/colors';
+import { QrDisplay } from '../src/components/QrDisplay';
 import { useIdentityStore } from '../src/stores/identityStore';
 import { createIdentityQrString } from '../src/services/crypto/qr';
 import {
@@ -23,6 +24,7 @@ import {
   Share2,
   Trash2,
   QrCode,
+  ScanLine,
   Key,
   Check,
   X,
@@ -73,7 +75,7 @@ export default function SettingsScreen() {
   const qrData = createIdentityQrString(profile);
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeScreen>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
@@ -218,26 +220,34 @@ export default function SettingsScreen() {
             </View>
 
             <View style={styles.qrBox}>
-              <QrCode size={120} color={Colors.primary} />
+              <QrDisplay value={qrData} size={190} />
               <Text style={styles.qrUser}>{profile.displayName}</Text>
               <Text style={styles.qrFingerprint}>{profile.id}</Text>
             </View>
 
             <Text style={styles.qrHelp}>
-              Scan this QR code with another NearLink device to verify cryptographic identity fingerprints.
+              Let a peer scan this code to add you — or scan theirs to add them. Everything happens
+              offline, directly between devices.
             </Text>
+
+            <TouchableOpacity
+              style={styles.scanPeerBtn}
+              onPress={() => {
+                setShowQrModal(false);
+                router.push('/scan?type=identity');
+              }}
+            >
+              <ScanLine size={16} color={Colors.primary} />
+              <Text style={styles.scanPeerBtnText}>Scan a Peer's QR Code</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </SafeScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -477,5 +487,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
     lineHeight: 16,
+  },
+  scanPeerBtn: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: Colors.surfaceHighlight,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    paddingVertical: 11,
+    borderRadius: 10,
+    marginTop: 14,
+  },
+  scanPeerBtnText: {
+    color: Colors.textPrimary,
+    fontSize: 13,
+    fontWeight: '700',
   },
 });

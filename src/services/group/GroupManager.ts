@@ -1,5 +1,6 @@
 import { OfflineGroup, GroupMember } from '../../types/group';
 import { generateGroupKey, encryptGroupMessage, decryptGroupMessage } from '../crypto/cipher';
+import { QrGroupInvitePayload } from '../crypto/qr';
 import { LocalStorage } from '../storage/LocalStorage';
 import { MeshRouter } from '../mesh/MeshRouter';
 import { ChatMessage } from '../../types/message';
@@ -81,6 +82,59 @@ export class GroupManager {
       await LocalStorage.getInstance().saveGroup(group);
     }
     return group;
+  }
+
+  /**
+   * Join a group from a scanned invite QR payload. Fully offline — the invite
+   * carries the shared group key, so no server round-trip is required.
+   *
+   * Idempotent: re-scanning an invite for a group you already belong to simply
+   * refreshes the key/epoch when the invite is newer (i.e. after a key rotation).
+   */
+  async joinFromInvite(invite: QrGroupInvitePayload): Promise<OfflineGroup> {
+    const now = Date.now();
+    const storage = LocalStorage.getInstance();
+    const existing = this.groups.get(invite.groupId);
+
+    if (existing) {
+      if (invite.epoch >= existing.epoch) {
+        existing.groupKey = invite.groupKey;
+        existing.epoch = invite.epoch;
+        if (!existing.members.some((m) => m.id === this.localUserId)) {
+          existing.members.push(this.buildMember('member', now));
+        }
+        await storage.saveGroup(existing);
+      }
+      return existing;
+    }
+
+    const group: OfflineGroup = {
+      id: invite.groupId,
+      name: invite.groupName,
+      iconSeed: invite.groupName.substring(0, 2).toUpperCase(),
+      creatorId: invite.creatorId,
+      createdAt: now,
+      members: [this.buildMember('member', now)],
+      groupKey: invite.groupKey,
+      epoch: invite.epoch,
+      unreadCount: 0,
+    };
+
+    this.groups.set(group.id, group);
+    await storage.saveGroup(group);
+    return group;
+  }
+
+  private buildMember(role: GroupMember['role'], now: number): GroupMember {
+    return {
+      id: this.localUserId,
+      displayName: this.localUserName,
+      avatarSeed: this.localUserId.substring(0, 4),
+      role,
+      joinedAt: now,
+      lastSeen: now,
+      publicKey: '',
+    };
   }
 
   /**

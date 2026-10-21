@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeScreen } from '../src/components/SafeScreen';
 import { useRouter } from 'expo-router';
 import { Colors } from '../src/theme/colors';
 import { Header } from '../src/components/Header';
@@ -20,6 +20,7 @@ export default function NearbyScreen() {
   const router = useRouter();
   const {
     isScanning,
+    mode,
     discoveredPeers,
     connectedPeers,
     startScan,
@@ -41,7 +42,7 @@ export default function NearbyScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeScreen>
       <Header title="NearLink" subtitle="Nearby Discovery" />
 
       {/* Control Banner */}
@@ -57,6 +58,21 @@ export default function NearbyScreen() {
             <Text style={styles.bannerDesc}>
               {discoveredPeers.length} {discoveredPeers.length === 1 ? 'device' : 'devices'} in radio proximity
             </Text>
+            <View
+              style={[
+                styles.modeBadge,
+                mode === 'native' ? styles.modeBadgeLive : styles.modeBadgeDemo,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.modeBadgeText,
+                  mode === 'native' ? styles.modeTextLive : styles.modeTextDemo,
+                ]}
+              >
+                {mode === 'native' ? '● LIVE BLUETOOTH' : '● DEMO SIMULATION'}
+              </Text>
+            </View>
           </View>
         </View>
 
@@ -127,15 +143,11 @@ export default function NearbyScreen() {
           <Text style={styles.navText}>Groups</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </SafeScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
   controlBanner: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -175,6 +187,33 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
     fontSize: 12,
     marginTop: 2,
+  },
+  modeBadge: {
+    alignSelf: 'flex-start',
+    marginTop: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  modeBadgeLive: {
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+    borderColor: Colors.success,
+  },
+  modeBadgeDemo: {
+    backgroundColor: 'rgba(245, 158, 11, 0.12)',
+    borderColor: Colors.warning,
+  },
+  modeBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  modeTextLive: {
+    color: Colors.success,
+  },
+  modeTextDemo: {
+    color: Colors.warning,
   },
   scanBtn: {
     flexDirection: 'row',

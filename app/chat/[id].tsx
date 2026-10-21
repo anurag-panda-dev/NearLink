@@ -10,12 +10,13 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeScreen } from '../../src/components/SafeScreen';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors } from '../../src/theme/colors';
 import { MessageBubble } from '../../src/components/MessageBubble';
 import { ConnectionBadge } from '../../src/components/ConnectionBadge';
 import { useChatStore } from '../../src/stores/chatStore';
+import { useContactStore } from '../../src/stores/contactStore';
 import { useBleStore } from '../../src/stores/bleStore';
 import { useIdentityStore } from '../../src/stores/identityStore';
 import { getSafetyNumber } from '../../src/services/crypto/keys';
@@ -45,7 +46,8 @@ export default function DirectChatScreen() {
 
   const isConnected = connectedPeers.includes(peerId);
   const peerInfo = discoveredPeers.find((p) => p.id === peerId);
-  const peerName = peerInfo?.name || `Peer ${peerId.substring(0, 6)}`;
+  const peerContact = useContactStore((s) => s.contacts.find((c) => c.id === peerId));
+  const peerName = peerInfo?.name || peerContact?.displayName || `Peer ${peerId.substring(0, 6)}`;
 
   useEffect(() => {
     if (peerId) {
@@ -63,7 +65,11 @@ export default function DirectChatScreen() {
 
   const handleShowSafetyNumber = () => {
     if (!keys || !profile) return;
-    const peerPub = BleService.getInstance().getPeerPublicKey(peerId) || peerInfo?.publicKey || 'DemoKey';
+    const peerPub =
+      BleService.getInstance().getPeerPublicKey(peerId) ||
+      peerInfo?.publicKey ||
+      peerContact?.publicKey ||
+      'DemoKey';
     const code = getSafetyNumber(keys.encryption.publicKey, peerPub);
 
     Alert.alert(
@@ -73,7 +79,7 @@ export default function DirectChatScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeScreen>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
@@ -181,15 +187,11 @@ export default function DirectChatScreen() {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

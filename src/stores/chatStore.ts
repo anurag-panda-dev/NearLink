@@ -116,6 +116,12 @@ export const useChatStore = create<ChatState>((set, get) => {
         peerPublicKey = discovered?.publicKey;
       }
 
+      // Fall back to the key captured from a scanned identity QR
+      if (!peerPublicKey) {
+        const contact = await storage.getContact(peerId);
+        peerPublicKey = contact?.publicKey;
+      }
+
       // If peer key not yet available, generate demo compatible public key so simulation always encrypts
       if (!peerPublicKey) {
         peerPublicKey = identity.keys.encryption.publicKey;

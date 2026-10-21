@@ -6,13 +6,13 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeScreen } from '../src/components/SafeScreen';
 import { useRouter } from 'expo-router';
 import { Colors } from '../src/theme/colors';
 import { Header } from '../src/components/Header';
 import { useGroupStore } from '../src/stores/groupStore';
 import { OfflineGroup } from '../src/types/group';
-import { Users, Plus, Shield, Radio, MessageSquare } from 'lucide-react-native';
+import { Users, Plus, Shield, Radio, MessageSquare, ScanLine } from 'lucide-react-native';
 
 export default function GroupsListScreen() {
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function GroupsListScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeScreen>
       <Header title="NearLink" subtitle="Mesh Groups" />
 
       {/* Hero Banner */}
@@ -39,13 +39,22 @@ export default function GroupsListScreen() {
             Broadcast encrypted messages to all group members across multi-hop BLE relays.
           </Text>
         </View>
-        <TouchableOpacity
-          style={styles.createBtn}
-          onPress={() => router.push('/group/create')}
-        >
-          <Plus size={16} color={Colors.background} />
-          <Text style={styles.createBtnText}>New</Text>
-        </TouchableOpacity>
+        <View style={styles.bannerBtnCol}>
+          <TouchableOpacity
+            style={styles.joinBtn}
+            onPress={() => router.push('/scan?type=group')}
+          >
+            <ScanLine size={16} color={Colors.purple} />
+            <Text style={styles.joinBtnText}>Join</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.createBtn}
+            onPress={() => router.push('/group/create')}
+          >
+            <Plus size={16} color={Colors.background} />
+            <Text style={styles.createBtnText}>New</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Groups List */}
@@ -91,6 +100,13 @@ export default function GroupsListScreen() {
               Create an offline group to communicate with multiple nearby or relayed peers simultaneously.
             </Text>
             <TouchableOpacity
+              style={styles.emptyJoinBtn}
+              onPress={() => router.push('/scan?type=group')}
+            >
+              <ScanLine size={16} color={Colors.purple} />
+              <Text style={styles.emptyJoinBtnText}>Join via Invite QR</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               style={styles.emptyCreateBtn}
               onPress={() => router.push('/group/create')}
             >
@@ -127,15 +143,11 @@ export default function GroupsListScreen() {
           <Text style={[styles.navText, { color: Colors.purple }]}>Groups</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </SafeScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
   banner: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -175,6 +187,25 @@ const styles = StyleSheet.create({
   },
   createBtnText: {
     color: Colors.background,
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  bannerBtnCol: {
+    gap: 8,
+  },
+  joinBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: Colors.purple,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 8,
+  },
+  joinBtnText: {
+    color: Colors.purple,
     fontSize: 13,
     fontWeight: 'bold',
   },
@@ -269,6 +300,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 18,
     marginBottom: 20,
+  },
+  emptyJoinBtn: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(139, 92, 246, 0.12)',
+    borderWidth: 1,
+    borderColor: Colors.purple,
+    paddingVertical: 12,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  emptyJoinBtnText: {
+    color: Colors.purple,
+    fontSize: 14,
+    fontWeight: '700',
   },
   emptyCreateBtn: {
     flexDirection: 'row',

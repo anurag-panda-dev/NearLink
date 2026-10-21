@@ -7,8 +7,10 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeScreen } from '../../src/components/SafeScreen';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../src/theme/colors';
 import { useGroupStore } from '../../src/stores/groupStore';
@@ -34,7 +36,7 @@ export default function CreateGroupScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeScreen>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
@@ -43,72 +45,73 @@ export default function CreateGroupScreen() {
         <Text style={styles.headerTitle}>Create Offline Group</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.iconSection}>
-          <View style={styles.iconCircle}>
-            <Users size={36} color={Colors.purple} />
-          </View>
-          <Text style={styles.sectionTitle}>Decentralized Mesh Room</Text>
-          <Text style={styles.sectionSubtitle}>
-            Groups allow encrypted multi-user messaging across connected and relayed Bluetooth nodes.
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.label}>Group Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="e.g. Field Team Alpha, Campus Grid"
-            placeholderTextColor={Colors.textMuted}
-            value={groupName}
-            onChangeText={setGroupName}
-            maxLength={32}
-          />
-
-          <Text style={styles.label}>Description (Optional)</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="e.g. Offline coordinating group for field activities"
-            placeholderTextColor={Colors.textMuted}
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            numberOfLines={3}
-            maxLength={140}
-          />
-
-          <View style={styles.infoBox}>
-            <KeyRound size={16} color={Colors.purple} />
-            <Text style={styles.infoText}>
-              A 256-bit symmetric encryption key will be generated locally. Only authenticated members can decrypt messages.
+      <KeyboardAvoidingView
+        style={styles.kav}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView contentContainerStyle={styles.content}>
+          <View style={styles.iconSection}>
+            <View style={styles.iconCircle}>
+              <Users size={36} color={Colors.purple} />
+            </View>
+            <Text style={styles.sectionTitle}>Decentralized Mesh Room</Text>
+            <Text style={styles.sectionSubtitle}>
+              Groups allow encrypted multi-user messaging across connected and relayed Bluetooth nodes.
             </Text>
           </View>
 
-          <TouchableOpacity
-            style={[
-              styles.createButton,
-              !groupName.trim() && styles.createButtonDisabled,
-            ]}
-            onPress={handleCreate}
-            disabled={!groupName.trim() || isSubmitting}
-          >
-            {isSubmitting ? (
-              <ActivityIndicator color={Colors.background} />
-            ) : (
-              <Text style={styles.createButtonText}>Create Group & Key</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          <View style={styles.card}>
+            <Text style={styles.label}>Group Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="e.g. Field Team Alpha, Campus Grid"
+              placeholderTextColor={Colors.textMuted}
+              value={groupName}
+              onChangeText={setGroupName}
+              maxLength={32}
+            />
+
+            <Text style={styles.label}>Description (Optional)</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="e.g. Offline coordinating group for field activities"
+              placeholderTextColor={Colors.textMuted}
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              numberOfLines={3}
+              maxLength={140}
+            />
+
+            <View style={styles.infoBox}>
+              <KeyRound size={16} color={Colors.purple} />
+              <Text style={styles.infoText}>
+                A 256-bit symmetric encryption key will be generated locally. Only authenticated members can decrypt messages.
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={[
+                styles.createButton,
+                !groupName.trim() && styles.createButtonDisabled,
+              ]}
+              onPress={handleCreate}
+              disabled={!groupName.trim() || isSubmitting}
+            >
+              {isSubmitting ? (
+                <ActivityIndicator color={Colors.background} />
+              ) : (
+                <Text style={styles.createButtonText}>Create Group & Key</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -129,6 +132,9 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+  },
+  kav: {
+    flex: 1,
   },
   iconSection: {
     alignItems: 'center',

@@ -11,10 +11,11 @@ import {
   Modal,
   Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeScreen } from '../../src/components/SafeScreen';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors } from '../../src/theme/colors';
 import { MessageBubble } from '../../src/components/MessageBubble';
+import { QrDisplay } from '../../src/components/QrDisplay';
 import { useGroupStore } from '../../src/stores/groupStore';
 import { useIdentityStore } from '../../src/stores/identityStore';
 import { GroupManager } from '../../src/services/group/GroupManager';
@@ -25,7 +26,6 @@ import {
   Users,
   Shield,
   KeyRound,
-  QrCode,
   X,
   Share2,
 } from 'lucide-react-native';
@@ -78,21 +78,21 @@ export default function GroupChatScreen() {
 
   if (!activeGroup) {
     return (
-      <SafeAreaView style={styles.safe}>
+      <SafeScreen>
         <View style={styles.header}>
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
             <ArrowLeft size={20} color={Colors.textPrimary} />
           </TouchableOpacity>
           <Text style={styles.groupNameText}>Loading Group...</Text>
         </View>
-      </SafeAreaView>
+      </SafeScreen>
     );
   }
 
   const qrString = createGroupInviteQrString(activeGroup);
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeScreen>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
@@ -188,7 +188,7 @@ export default function GroupChatScreen() {
 
             <View style={styles.qrSection}>
               <View style={styles.qrPlaceholder}>
-                <QrCode size={64} color={Colors.purple} />
+                <QrDisplay value={qrString} size={170} />
                 <Text style={styles.qrText}>Offline Group Invite QR</Text>
                 <Text style={styles.qrPayload} numberOfLines={2}>
                   {qrString}
@@ -228,15 +228,11 @@ export default function GroupChatScreen() {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </SafeScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

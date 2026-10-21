@@ -290,6 +290,7 @@ interface MeshPacketEnvelope {
 | 🗨 Direct chat        | `app/chat/[id].tsx`  | E2EE messaging, safety-number modal, reactions                 |
 | 👥 Groups             | `app/groups.tsx`     | Room list, member counts, unread previews                      |
 | ➕ Create group       | `app/group/create.tsx` | Offline room with an auto-generated 256-bit key              |
+| 🆕 Scan QR            | `app/scan.tsx`       | On-device camera scanner for any QR — identity add, group join, manual-entry fallback |
 | 🕸 Group chat         | `app/group/[id].tsx` | Multi-recipient mesh chat, roster, QR invites, key rotation    |
 | 🗺️ Mesh topology      | `app/mesh.tsx`       | Radar map, live routing table, test packets, battery saver      |
 | ⚙️ Settings           | `app/settings.tsx`   | Fingerprints, QR sharing, relay opt-in, irreversible wipe      |
@@ -302,17 +303,18 @@ interface MeshPacketEnvelope {
 NearLink/
 ├── app/                    # Expo Router screens
 ├── src/
+│   ├── components/         # shared UI (SafeScreen, QrDisplay, cards, header)
 │   ├── services/
-│   │   ├── ble/            # driver interface, simulator, handshake
-│   │   ├── crypto/         # keys, cipher, QR payloads
-│   │   ├── group/          # group creation, epochs, rotation
+│   │   ├── ble/            # driver interface, native ble-plx driver, simulator
+│   │   ├── crypto/         # keys, cipher, QR payloads + scanner classification
+│   │   ├── group/          # creation, join-via-invite, epochs, rotation
 │   │   ├── mesh/           # router, deduplication cache
 │   │   ├── message-queue/  # framing, retries, delivery ACKs
 │   │   └── storage/        # on-device persistence boundary
-│   ├── stores/             # Zustand slices
+│   ├── stores/             # Zustand slices (identity, contacts, chat, group, mesh, ble)
 │   ├── theme/              # design tokens
 │   └── types/              # shared contracts
-├── tests/                  # 22 Jest tests
+├── tests/                  # 32 Jest tests
 ├── scripts/                # demo, asset generation, validation
 ├── assets/                 # icon, splash, favicon
 └── .github/                # CI, issue and PR templates
@@ -327,7 +329,8 @@ NearLink/
 | Crypto       | TweetNaCl `1.0.3`                                  |
 | State        | Zustand `5`                                        |
 | Validation   | Zod `3`                                            |
-| UI           | `lucide-react-native` · `react-native-svg`         |
+| UI           | `lucide-react-native` · `react-native-svg` · `react-native-qrcode-svg` |
+| Camera       | `expo-camera` — QR scanning, fully on-device                    |
 | Storage      | `expo-secure-store` · on-device `StorageInterface` |
 | Testing      | Jest `29` · ts-jest · GitHub Actions               |
 | Build        | EAS Build · local Gradle                            |

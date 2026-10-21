@@ -1,8 +1,21 @@
 import { BleManagerInterface } from './BleManagerInterface';
 import { BleSimulator } from './BleSimulator';
+import { BleNative, isNativeBleSupported } from './BleNative';
 import { BlePacket, DiscoveredPeer, BleConnectionState } from '../../types/ble';
 import { UserProfile } from '../../types/identity';
 import { signData, verifySignature } from '../crypto/keys';
+
+/**
+ * Real radio (react-native-ble-plx) when running inside a native build with the
+ * native module present; otherwise the in-process simulator (Expo Go, web, tests).
+ * isNativeBleSupported() swallows every require failure, so Node/jest stays safe.
+ */
+function createDefaultManager(): BleManagerInterface {
+  if (isNativeBleSupported()) {
+    return new BleNative();
+  }
+  return new BleSimulator();
+}
 
 export class BleService {
   private static instance: BleService;
@@ -14,8 +27,8 @@ export class BleService {
   private packetHandlers: ((fromPeerId: string, packet: BlePacket) => void)[] = [];
 
   private constructor() {
-    // Default to BleSimulator for deterministic testing & cross-platform execution
-    this.manager = new BleSimulator();
+    // Real BLE in native builds; BleSimulator for Expo Go / web / deterministic tests
+    this.manager = createDefaultManager();
     this.setupListeners();
   }
 
@@ -24,6 +37,11 @@ export class BleService {
       BleService.instance = new BleService();
     }
     return BleService.instance;
+  }
+
+  /** 'native' = real device radio, 'sim' = in-process demo peers. */
+  getMode(): 'native' | 'sim' {
+    return this.manager instanceof BleNative ? 'native' : 'sim';
   }
 
   setManager(customManager: BleManagerInterface) {

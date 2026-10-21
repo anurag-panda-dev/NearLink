@@ -5,6 +5,7 @@ import { QueueManager } from '../services/message-queue/QueueManager';
 
 interface BleState {
   state: BleConnectionState;
+  mode: 'native' | 'sim';
   isScanning: boolean;
   discoveredPeers: DiscoveredPeer[];
   connectedPeers: string[];
@@ -31,6 +32,7 @@ export const useBleStore = create<BleState>((set, get) => {
 
   return {
     state: 'idle',
+    mode: ble.getMode(),
     isScanning: false,
     discoveredPeers: [],
     connectedPeers: [],
@@ -38,10 +40,16 @@ export const useBleStore = create<BleState>((set, get) => {
 
     startScan: async () => {
       set({ isScanning: true, state: 'scanning' });
-      await ble.startDiscovery((peer) => {
-        const peers = ble.getDiscoveredPeers();
-        set({ discoveredPeers: [...peers] });
-      });
+      try {
+        await ble.startDiscovery((peer) => {
+          const peers = ble.getDiscoveredPeers();
+          set({ discoveredPeers: [...peers] });
+        });
+      } catch (err) {
+        // Native radio unavailable (Bluetooth off / permission denied)
+        console.warn('[bleStore] startScan failed:', err);
+        set({ isScanning: false, state: 'failed' });
+      }
     },
 
     stopScan: async () => {

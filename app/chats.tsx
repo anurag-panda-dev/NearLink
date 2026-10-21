@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeScreen } from '../src/components/SafeScreen';
 import { useRouter } from 'expo-router';
 import { Colors } from '../src/theme/colors';
 import { Header } from '../src/components/Header';
@@ -21,6 +21,7 @@ import {
   Radio,
   Users,
   Plus,
+  ScanLine,
 } from 'lucide-react-native';
 
 export default function ChatsListScreen() {
@@ -43,10 +44,10 @@ export default function ChatsListScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeScreen>
       <Header title="NearLink" subtitle="Direct Messages" />
 
-      {/* Search Bar */}
+      {/* Search & Scan */}
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
           <Search size={16} color={Colors.textMuted} />
@@ -58,6 +59,9 @@ export default function ChatsListScreen() {
             onChangeText={setSearchQuery}
           />
         </View>
+        <TouchableOpacity style={styles.scanBtn} onPress={() => router.push('/scan')}>
+          <ScanLine size={18} color={Colors.primary} />
+        </TouchableOpacity>
       </View>
 
       {/* Conversation List */}
@@ -160,18 +164,27 @@ export default function ChatsListScreen() {
           <Text style={styles.navText}>Groups</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </SafeScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
   searchSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
     paddingHorizontal: 16,
     paddingVertical: 10,
+  },
+  scanBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    backgroundColor: Colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.borderActive,
   },
   searchBar: {
     flexDirection: 'row',

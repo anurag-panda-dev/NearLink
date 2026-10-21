@@ -31,6 +31,7 @@ export default function RootLayout() {
         <Stack.Screen name="group/[id]" />
         <Stack.Screen name="mesh" />
         <Stack.Screen name="settings" />
+        <Stack.Screen name="scan" />
       </Stack>
     </SafeAreaProvider>
   );

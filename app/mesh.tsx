@@ -8,7 +8,7 @@ import {
   Switch,
   FlatList,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeScreen } from '../src/components/SafeScreen';
 import { useRouter } from 'expo-router';
 import { Colors } from '../src/theme/colors';
 import { Header } from '../src/components/Header';
@@ -57,7 +57,7 @@ export default function MeshScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeScreen>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
@@ -138,15 +138,11 @@ export default function MeshScreen() {
           )}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

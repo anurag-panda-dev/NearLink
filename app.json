@@ -11,10 +11,12 @@
       "bundleIdentifier": "com.nearlink.offline",
       "infoPlist": {
         "NSBluetoothAlwaysUsageDescription": "NearLink requires Bluetooth to discover nearby peers and exchange offline messages without internet.",
-        "NSBluetoothPeripheralUsageDescription": "NearLink uses Bluetooth advertising to let nearby friends find and communicate with you."
+        "NSBluetoothPeripheralUsageDescription": "NearLink uses Bluetooth advertising to let nearby friends find and communicate with you.",
+        "NSCameraUsageDescription": "NearLink uses the camera to scan identity and group invite QR codes for fully offline peer and group pairing. Images are never stored or uploaded."
       }
     },
     "android": {
+      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#090D16"
@@ -26,7 +28,9 @@
         "android.permission.BLUETOOTH_SCAN",
         "android.permission.BLUETOOTH_ADVERTISE",
         "android.permission.BLUETOOTH_CONNECT",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -43,8 +47,20 @@
           "imageWidth": 200,
           "resizeMode": "contain"
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "NearLink uses the camera to scan identity and group invite QR codes for fully offline peer and group pairing. Images are never stored or uploaded."
+        }
       ]
     ],
-    "scheme": "nearlink"
+    "scheme": "nearlink",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8e050458-de30-4c84-8927-af2cfca4af0c"
+      }
+    }
   }
 }
