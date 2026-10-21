@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "NearLink",
+    "slug": "nearlink",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#090D16"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nearlink.offline",
+      "infoPlist": {
+        "NSBluetoothAlwaysUsageDescription": "NearLink requires Bluetooth to discover nearby peers and exchange offline messages without internet.",
+        "NSBluetoothPeripheralUsageDescription": "NearLink uses Bluetooth advertising to let nearby friends find and communicate with you."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#090D16"
+      },
+      "package": "com.nearlink.offline",
+      "permissions": [
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_ADVERTISE",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "scheme": "nearlink"
+  }
+}

@@ -1,0 +1,25 @@
+name: Feature Request
+description: Propose an idea or enhancement for NearLink
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for suggesting a feature to make NearLink better!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Is your feature request related to a problem?
+      description: A clear and concise description of the problem or limitation.
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution or feature you would like to see implemented.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any diagrams, references, or alternative approaches considered.
