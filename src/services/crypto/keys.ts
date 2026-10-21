@@ -49,13 +49,16 @@ export function getSafetyNumber(localPubKey: string, peerPubKey: string): string
 
 /**
  * Sign data using Ed25519 secret key.
+ * Returns an empty string if the key is absent, zero-length, or the wrong size
+ * (64 bytes required by Ed25519) — never throws.
  */
 export function signData(message: string, secretKeyBase64?: string): string {
-  if (!secretKeyBase64) return '';
+  if (!secretKeyBase64 || secretKeyBase64.length === 0) return '';
   try {
     const msgBytes = decodeUTF8(message);
     const secBytes = decodeBase64(secretKeyBase64);
-    if (!secBytes || secBytes.length !== nacl.sign.secretKeyLength) {
+    // nacl.sign.secretKeyLength === 64; reject 0-byte or wrong-size keys
+    if (!secBytes || secBytes.length === 0 || secBytes.length !== nacl.sign.secretKeyLength) {
       return '';
     }
     const sig = nacl.sign.detached(msgBytes, secBytes);

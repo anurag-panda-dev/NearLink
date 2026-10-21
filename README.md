@@ -70,7 +70,7 @@ phones are in direct radio range.
 - **Safety numbers** give you a 6-digit code to compare out of band.
 - Keys never leave the device, and the crypto layer is covered by tests.
 
-### 🕸️ A mesh that actually routes
+### 🕸 A mesh that actually routes
 
 Each packet carries a TTL, a hop counter, a traversal path and a signature.
 Nodes refuse to rebroadcast a packet they've already seen, drop packets whose
@@ -142,7 +142,7 @@ Pick the path that matches what you want to do:
 | Run on iOS                      | `npm run ios`                                                        | ~5 min |
 | Play in a browser (simulated)  | `npm run web`                                                        | ~1 min |
 | Sideload a real APK             | `eas build -p android --profile preview`                             | ~10 min |
-| Build from source               | `npx expo prebuild --platform android && cd android && ./gradlew assembleRelease` | ~15 min |
+| Build from source               | `npx expo prebuild --platform android` (then `android/gradlew assembleRelease`) | ~15 min |
 
 **Requirements:** Node.js 18+ (20 recommended), Android 8+ or iOS 13+ with
 Bluetooth LE. Expo Go is fine for the UI; native BLE needs a development build.
@@ -192,6 +192,7 @@ Turn off Wi-Fi and mobile data on two devices, open NearLink on both, then:
 | `npm run typecheck`   | `tsc --noEmit`, strict                           |
 | `npm run demo`        | Runnable offline-mesh demo                       |
 | `npm run assets`      | Regenerate the brand assets                      |
+| `npm run assets:check` | Validate every generated PNG                 |
 
 ---
 
@@ -286,10 +287,10 @@ interface MeshPacketEnvelope {
 | 🧑 Onboarding         | `app/index.tsx`      | Privacy promise, display name, on-device keypair generation     |
 | 📡 Nearby             | `app/nearby.tsx`     | Live BLE scan, RSSI bars, GATT pairing                         |
 | 💬 Chats              | `app/chats.tsx`      | Conversation list, unread badges, delivery ticks               |
-| 🗨️ Direct chat        | `app/chat/[id].tsx`  | E2EE messaging, safety-number modal, reactions                 |
+| 🗨 Direct chat        | `app/chat/[id].tsx`  | E2EE messaging, safety-number modal, reactions                 |
 | 👥 Groups             | `app/groups.tsx`     | Room list, member counts, unread previews                      |
 | ➕ Create group       | `app/group/create.tsx` | Offline room with an auto-generated 256-bit key              |
-| 🕸️ Group chat         | `app/group/[id].tsx` | Multi-recipient mesh chat, roster, QR invites, key rotation    |
+| 🕸 Group chat         | `app/group/[id].tsx` | Multi-recipient mesh chat, roster, QR invites, key rotation    |
 | 🗺️ Mesh topology      | `app/mesh.tsx`       | Radar map, live routing table, test packets, battery saver      |
 | ⚙️ Settings           | `app/settings.tsx`   | Fingerprints, QR sharing, relay opt-in, irreversible wipe      |
 
@@ -399,8 +400,8 @@ MIT © 2026 NearLink Contributors — see **[LICENSE](./LICENSE)**.
 ### ⭐ If communication should work without a signal, give NearLink a star.
 
 <sub>
-<a href="#-why-nearlink">Why</a> ·
-<a href="#-try-it-in-60-seconds">Demo</a> ·
+<a href="#why-nearlink">Why</a> ·
+<a href="#try-it-in-60-seconds">Demo</a> ·
 <a href="./GUIDE.md">Guide</a> ·
 <a href="./CONTRIBUTING.md">Contribute</a> ·
 <a href="./SECURITY.md">Security</a>
