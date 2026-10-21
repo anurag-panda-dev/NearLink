@@ -14,7 +14,7 @@ This project adheres to the Contributor Covenant [Code of Conduct](CODE_OF_CONDU
 
 1. **Fork and Clone**
    ```bash
-   git clone https://github.com/your-username/NearLink.git
+   git clone https://github.com/anurag-panda-dev/NearLink.git
    cd NearLink
    ```
 
